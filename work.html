@@ -1,0 +1,25 @@
+---
+layout: default
+nav: work
+permalink: /work/
+title: Experience
+---
+<section class="page-pad">
+  <h1 class="page-title">Experience</h1>
+  <p class="section-intro">A timeline of where I've worked and what I built there.</p>
+  <div class="timeline">
+    {% for job in site.data.jobs %}
+    <div class="job">
+      <span class="dot"></span>
+      <span class="period">{{ job.period }}</span>
+      <div class="detail">
+        <h3>{{ job.role }}</h3>
+        <p class="company">{{ job.company }}</p>
+        <ul>
+          {% for point in job.points %}<li>{{ point }}</li>{% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>

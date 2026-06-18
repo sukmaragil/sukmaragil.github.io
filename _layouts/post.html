@@ -1,0 +1,15 @@
+---
+layout: default
+nav: blog
+---
+<article class="post">
+  <a class="back" href="{{ '/blog/' | relative_url }}">← All writing</a>
+  <div class="post-meta">
+    <span class="date">{{ page.date | date: "%b %Y" }}</span>
+    {% if page.read %}<span class="read">{{ page.read }}</span>{% endif %}
+  </div>
+  <h1 class="post-title">{{ page.title }}</h1>
+  <div class="post-body">
+    {{ content }}
+  </div>
+</article>

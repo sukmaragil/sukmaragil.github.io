@@ -1,0 +1,20 @@
+# Projects. Add one by copying a block.
+- name: "E2E Automation Framework"
+  tag: "INTERNAL"
+  body: "A page-object-based end-to-end framework with parallel execution and rich failure artifacts, adopted across product teams."
+  stack: ["Playwright", "TypeScript", "CI"]
+
+- name: "Contract Test Harness"
+  tag: "TOOLING"
+  body: "Consumer-driven contract verification wired into provider pipelines to catch breaking API changes before release."
+  stack: ["Pact", "Node", "GitHub Actions"]
+
+- name: "Flaky-Test Dashboard"
+  tag: "INTERNAL"
+  body: "A dashboard that surfaces and ranks intermittent failures so teams can quarantine and fix the noisiest tests first."
+  stack: ["Python", "Grafana"]
+
+- name: "Mobile Regression Suite"
+  tag: "OPEN SOURCE"
+  body: "A maintainable mobile regression suite with device-farm integration and visual snapshot checks."
+  stack: ["Appium", "Espresso"]

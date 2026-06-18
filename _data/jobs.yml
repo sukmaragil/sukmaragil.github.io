@@ -1,0 +1,22 @@
+# Work experience — newest first. Add a new role by copying a block.
+- period: "2023 — Present"
+  role: "QA Engineer"
+  company: "Shopee"
+  points:
+    - "Own test automation and release quality for a high-traffic product surface."
+    - "Built reusable end-to-end frameworks adopted across multiple squads."
+    - "Introduced contract testing to reduce cross-service regression escapes."
+
+- period: "2021 — 2023"
+  role: "QA Automation Engineer"
+  company: "Previous Company"
+  points:
+    - "Migrated a manual regression suite to automated coverage, cutting release cycle time."
+    - "Established CI quality gates that blocked merges on failing critical paths."
+
+- period: "2019 — 2021"
+  role: "Software QA Analyst"
+  company: "Earlier Company"
+  points:
+    - "Designed test plans and exploratory testing strategies for web and mobile."
+    - "Partnered with developers to improve bug reporting and triage workflows."

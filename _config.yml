@@ -1,8 +1,30 @@
-remote_theme: pages-themes/midnight@v0.2.0
-plugins:
-- jekyll-remote-theme # add this line to the plugins list if you already have one
+title: Sukma Ragil
+tagline: QA Engineer
+author: Sukma Ragil
+description: >-
+  Personal site of Sukma Ragil — QA Engineer focused on test automation,
+  reliable CI pipelines, and software quality.
 
-title: [Sukma's Profile]
-description: [This is my profile page]
-show_downloads: [false]
-google_analytics: [G-LLVVZEFLQZ]
+# Where the site lives.
+# If your repo is named <username>.github.io, leave both blank.
+# If it is a project repo (e.g. github.com/you/portfolio), set:
+#   baseurl: "/portfolio"
+url: ""
+baseurl: ""
+
+# Social / contact (edit these)
+linkedin: "https://www.linkedin.com/in/sukmaragil"
+github: "https://github.com"
+email: "hello@sukmaragil.dev"
+
+# Build
+markdown: kramdown
+permalink: /blog/:title/
+timezone: Asia/Jakarta
+
+# Newest posts first in listings
+sort_posts: descending
+
+exclude:
+  - README.md
+  - preview.html

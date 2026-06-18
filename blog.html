@@ -1,0 +1,22 @@
+---
+layout: default
+nav: blog
+permalink: /blog/
+title: Writing
+---
+<section class="page-pad">
+  <h1 class="page-title">Writing</h1>
+  <p class="section-intro">Notes on quality, testing, and the craft of building dependable software.</p>
+  <div class="post-list">
+    {% for post in site.posts %}
+    <a href="{{ post.url | relative_url }}">
+      <div class="meta">
+        <span class="date">{{ post.date | date: "%b %Y" }}</span>
+        {% if post.read %}<span class="read">{{ post.read }}</span>{% endif %}
+      </div>
+      <h3>{{ post.title }}</h3>
+      <p>{{ post.excerpt | strip_html | truncate: 220 }}</p>
+    </a>
+    {% endfor %}
+  </div>
+</section>
