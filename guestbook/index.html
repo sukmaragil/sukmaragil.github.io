@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guestbook · Sukma Ragil</title>
+<meta name="description" content="Leave a note on the wall.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- ════════════════════════════════════════════════════════════════
+     CONFIG — injected at deploy time by .github/workflows/deploy.yml
+     from the github-pages environment. Do NOT paste keys here.
+
+     Environment secrets (Settings → Environments → github-pages)
+       SUPABASE_URL        Project Settings → API → Project URL
+       SUPABASE_ANON_KEY   Project Settings → API → anon public key
+
+     Environment variables
+       OPEN_FEEDBACK       "true" or "false"
+       SUPABASE_TABLE      table name (default "guestbook")
+       HOME_URL            "back to site" link (defaults to the
+                           site's baseurl; "" removes the link)
+
+     Any placeholder left unreplaced (opening the file locally, or a
+     variable not set) is treated as empty → browser-only mode.
+     ════════════════════════════════════════════════════════════════ -->
+<script>
+window.GUESTBOOK_CONFIG = {
+  supabaseUrl:  "__SUPABASE_URL__",
+  supabaseKey:  "__SUPABASE_ANON_KEY__",
+  table:        "__SUPABASE_TABLE__",
+  openFeedback: "__OPEN_FEEDBACK__",
+  homeUrl:      "__HOME_URL__"
+};
+</script>
+
+<style>
+:root {
+  --bg:#ffffff; --canvas:#f6f8fa; --ink:#1f2328; --body:#424a53;
+  --muted:#656d76; --faint:#8c959f; --border:#d0d7de;
+  --blue:#0969da; --green:#1f883d;
+  --serif:'Newsreader',Georgia,serif;
+  --sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+  --gb-bar-h:78px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--sans);
+  line-height:1.6; -webkit-font-smoothing:antialiased;
+  min-height:100vh; display:flex; flex-direction:column;
+}
+::selection{background:rgba(9,105,218,0.18)}
+a{color:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:0 28px;width:100%}
+
+.site-header{
+  position:sticky; top:0; z-index:20;
+  background:rgba(255,255,255,0.85); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.site-header .wrap{
+  display:flex;align-items:baseline;justify-content:space-between;
+  gap:24px;padding-top:18px;padding-bottom:18px;
+}
+.brand{font-family:var(--serif);font-size:19px;font-weight:600;letter-spacing:-0.01em;text-decoration:none}
+.home-link{
+  font-family:var(--mono);font-size:12.5px;letter-spacing:0.02em;
+  color:var(--muted);text-decoration:none;
+}
+.home-link:hover{color:var(--ink)}
+
+main{flex:1 0 auto;padding-bottom:44px}
+.page-pad{padding-top:88px}
+.page-title{
+  font-family:var(--serif);font-weight:500;font-size:38px;
+  letter-spacing:-0.02em;margin:0 0 12px;
+}
+.section-intro{font-size:17px;max-width:58ch;margin:0 0 56px;color:var(--body)}
+.label{
+  font-family:var(--mono);font-size:12.5px;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--blue);margin:0;font-weight:500;
+}
+
+.gb-setup{
+  border:1px solid var(--border);border-left:3px solid var(--blue);
+  background:var(--canvas);border-radius:6px;
+  padding:14px 18px;margin:0 0 40px;font-size:14.5px;color:var(--body);
+}
+.gb-setup strong{color:var(--ink)}
+.gb-setup code{font-family:var(--mono);font-size:0.88em;background:#eaeef2;padding:1px 5px;border-radius:4px}
+
+.gb-bleed{padding:0 28px}
+.gb-board-head{
+  display:flex;align-items:baseline;justify-content:space-between;
+  gap:16px;border-bottom:1px solid var(--border);
+  padding-bottom:12px;margin-bottom:24px;
+}
+.gb-total{font-family:var(--mono);font-size:12px;color:var(--faint)}
+
+.gb-board{display:flex;flex-wrap:wrap;align-items:flex-start;gap:18px;padding:4px 0 8px}
+.gb-note{
+  padding:20px 20px 16px;border-radius:3px;
+  box-shadow:0 1px 2px rgba(31,35,40,0.14),0 6px 14px -8px rgba(31,35,40,0.22);
+  transform:rotate(var(--tilt,0deg));
+  transition:transform .16s ease,box-shadow .16s ease;
+  display:flex;flex-direction:column;justify-content:space-between;min-width:0;
+}
+.gb-note.is-sm{flex:1 1 170px;max-width:260px}
+.gb-note.is-md{flex:1 1 250px;max-width:340px}
+.gb-note.is-lg{flex:1 1 320px;max-width:420px}
+.gb-note.is-xl{flex:1 1 400px;max-width:520px}
+.gb-note:hover{
+  transform:rotate(0deg) translateY(-3px);
+  box-shadow:0 2px 4px rgba(31,35,40,0.16),0 14px 24px -10px rgba(31,35,40,0.3);
+}
+.gb-note.is-new{animation:notePop .45s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes notePop{from{opacity:0;transform:rotate(var(--tilt,0deg)) scale(.9) translateY(10px)}
+to{opacity:1;transform:rotate(var(--tilt,0deg)) scale(1) translateY(0)}}
+.gb-note-msg{
+  font-family:var(--serif);font-size:17.5px;line-height:1.5;
+  margin:0 0 14px;color:#1f2328;text-wrap:pretty;overflow-wrap:anywhere;
+}
+.gb-note.is-sm .gb-note-msg{font-size:19px}
+.gb-note-foot{
+  display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;
+  gap:2px 12px;border-top:1px solid rgba(31,35,40,0.12);padding-top:9px;
+}
+.gb-note-name{font-family:var(--mono);font-size:12px;color:#1f2328;overflow-wrap:anywhere}
+.gb-note-time{font-family:var(--mono);font-size:11.5px;color:#424a53;white-space:nowrap}
+.gb-empty{
+  flex:1 1 100%;font-size:15.5px;color:var(--muted);
+  border:1px dashed var(--border);border-radius:6px;
+  padding:28px;text-align:center;margin:0;
+}
+
+.gb-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  background:rgba(255,255,255,0.93);backdrop-filter:blur(10px);
+  border-top:1px solid var(--border);
+  box-shadow:0 -2px 16px -8px rgba(31,35,40,0.28);
+}
+.gb-bar-inner{
+  position:relative;max-width:760px;margin:0 auto;padding:14px 28px;
+  display:flex;align-items:flex-end;gap:10px;
+}
+.gb-bar-inner input[type=text],.gb-bar-inner textarea{
+  font-family:var(--sans);font-size:15px;color:var(--ink);
+  background:var(--bg);border:1px solid var(--border);border-radius:6px;
+  padding:9px 12px;line-height:1.45;
+}
+.gb-bar-inner input[type=text]:focus,.gb-bar-inner textarea:focus{
+  outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(9,105,218,0.15);
+}
+.gb-bar-inner ::placeholder{color:var(--faint)}
+.gb-in-name{flex:0 1 152px;min-width:0}
+.gb-in-msg{flex:1 1 auto;min-width:0;resize:none;overflow-y:auto;max-height:96px}
+.btn{
+  font-family:var(--mono);font-size:13px;padding:10px 18px;
+  border-radius:6px;cursor:pointer;white-space:nowrap;
+  background:var(--green);color:#fff;border:1px solid var(--green);
+}
+.btn:hover{background:#1a7f37}
+.btn:disabled{opacity:.6;cursor:default}
+.gb-count{font-family:var(--mono);font-size:11.5px;color:var(--faint);white-space:nowrap;flex:0 0 auto;padding-bottom:11px}
+.gb-count.is-over{color:#cf222e}
+.gb-swatches{display:flex;gap:7px;flex:0 0 auto;padding-bottom:8px}
+.gb-swatch{
+  width:24px;height:24px;border-radius:50%;cursor:pointer;
+  border:1px solid rgba(31,35,40,0.18);padding:0;
+}
+.gb-swatch.is-on{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--blue)}
+.gb-status{
+  position:absolute;left:28px;top:-16px;
+  font-family:var(--mono);font-size:12px;
+  background:var(--ink);color:var(--bg);
+  padding:4px 11px;border-radius:20px;
+  opacity:0;transform:translateY(4px);
+  transition:opacity .18s ease,transform .18s ease;pointer-events:none;
+}
+.gb-status.is-on{opacity:1;transform:translateY(0)}
+.gb-status.is-bad{background:#cf222e}
+.gb-bar-inner input[type=text].gb-trap{
+  position:absolute;left:-9999px;top:0;width:1px;height:1px;padding:0;border:0;opacity:0;
+}
+
+.site-footer{border-top:1px solid var(--border);flex:0 0 auto}
+.site-footer .wrap{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:20px;flex-wrap:wrap;padding-top:34px;padding-bottom:34px;
+}
+.site-footer .copy{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.site-footer .links{display:flex;gap:20px}
+.site-footer .links a{font-family:var(--mono);font-size:12px;color:var(--muted);text-decoration:none}
+.site-footer .links a:hover{color:var(--ink)}
+body.gb-bar-on .site-footer{padding-bottom:calc(var(--gb-bar-h) + 16px)}
+
+@media (max-width:640px){
+  .page-title{font-size:30px}
+  .gb-bleed{padding:0 20px}
+  .gb-note,.gb-note.is-sm,.gb-note.is-md,.gb-note.is-lg,.gb-note.is-xl{flex:1 1 100%;max-width:100%}
+  .gb-bar-inner{flex-wrap:wrap;padding:12px 20px;gap:8px}
+  .gb-in-name,.gb-in-msg{flex:1 1 100%}
+  .gb-swatches{padding-bottom:0}
+  .gb-count{padding-bottom:0;margin-left:auto}
+  .gb-status{left:20px}
+}
+</style>
+</head>
+
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <span class="brand">Sukma Ragil</span>
+    <a class="home-link" id="home-link" href="#">← Back to site</a>
+  </div>
+</header>
+
+<main>
+  <section class="page-pad">
+    <div class="wrap">
+      <h1 class="page-title">Guestbook</h1>
+      <p class="section-intro" id="gb-intro">Passing through? Pin a note to the wall — a hello, a thought on something I wrote, or a question. No account needed.</p>
+      <div class="gb-setup" id="gb-setup" hidden>
+        <strong>Not connected yet.</strong> Notes are saved in this browser only.
+        Add the <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> environment secrets to the <code>github-pages</code> environment and deploy — see the README.
+      </div>
+    </div>
+
+    <div class="gb-bleed">
+      <div class="gb-board-head">
+        <h2 class="label">On the wall</h2>
+        <span id="gb-total" class="gb-total"></span>
+      </div>
+      <div id="gb-board" class="gb-board"></div>
+    </div>
+  </section>
+</main>
+
+<div class="gb-bar" id="gb-bar" hidden>
+  <form id="gb-form" class="gb-bar-inner" autocomplete="off">
+    <span id="gb-status" class="gb-status" role="status" aria-live="polite"></span>
+    <input id="gb-name" class="gb-in-name" type="text" maxlength="32" placeholder="Name (optional)" aria-label="Your name, optional">
+    <textarea id="gb-message" class="gb-in-msg" rows="1" maxlength="260" placeholder="Leave a note…" aria-label="Your message"></textarea>
+    <div id="gb-swatches" class="gb-swatches" role="group" aria-label="Note color"></div>
+    <span id="gb-count" class="gb-count">0 / 240</span>
+    <button type="submit" class="btn">Pin it</button>
+    <input id="gb-website" type="text" class="gb-trap" tabindex="-1" aria-hidden="true" autocomplete="off">
+  </form>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span class="copy">© <span id="yr"></span> Sukma Ragil</span>
+    <div class="links">
+      <a href="https://www.linkedin.com/in/sukmaragil" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="mailto:hello@sukmaragil.dev">Email</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var CFG = window.GUESTBOOK_CONFIG || {};
+
+  // An un-substituted __PLACEHOLDER__ means "not configured".
+  function val(v, fallback) {
+    if (typeof v !== 'string') return v === undefined ? fallback : v;
+    return /^__[A-Z_]+__$/.test(v) ? fallback : v;
+  }
+  CFG.supabaseUrl = val(CFG.supabaseUrl, '');
+  CFG.supabaseKey = val(CFG.supabaseKey, '');
+  CFG.table = val(CFG.table, 'guestbook') || 'guestbook';
+  CFG.homeUrl = val(CFG.homeUrl, '');
+  CFG.openFeedback = val(CFG.openFeedback, true);
+
+  var LIVE = !!(CFG.supabaseUrl && CFG.supabaseKey);
+  var OPEN = CFG.openFeedback !== false && CFG.openFeedback !== 'false';
+  var LS_KEY = 'gb_standalone_notes_v1', LS_LAST = 'gb_standalone_last';
+  var MAX_MSG = 240, MAX_NAME = 32, COOLDOWN_MS = 30000, POLL_MS = 20000;
+  var COLORS = ['#fff3bf', '#d3f9d8', '#d0ebff', '#ffdeeb', '#e5dbff'];
+
+  var board = document.getElementById('gb-board');
+  var totalEl = document.getElementById('gb-total');
+  var bar = document.getElementById('gb-bar');
+  var seenIds = {}, first = true;
+
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  var homeLink = document.getElementById('home-link');
+  if (CFG.homeUrl) homeLink.href = CFG.homeUrl; else homeLink.remove();
+  if (!LIVE) document.getElementById('gb-setup').hidden = false;
+  if (!OPEN) document.getElementById('gb-intro').textContent = 'A wall of notes from people passing through.';
+
+  function ago(iso) {
+    var s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+    if (isNaN(s) || s < 60) return 'just now';
+    var m = Math.floor(s / 60); if (m < 60) return m + (m === 1 ? ' minute ago' : ' minutes ago');
+    var h = Math.floor(m / 60); if (h < 24) return h + (h === 1 ? ' hour ago' : ' hours ago');
+    var d = Math.floor(h / 24); if (d < 30) return d + (d === 1 ? ' day ago' : ' days ago');
+    return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+  function tilt(seed) {
+    var h = 2166136261;
+    for (var i = 0; i < seed.length; i++) { h ^= seed.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return (((h >>> 0) % 2001) / 1000 - 1).toFixed(2);
+  }
+  function sizeClass(m) {
+    var n = (m || '').length;
+    return n <= 45 ? 'is-sm' : n <= 105 ? 'is-md' : n <= 175 ? 'is-lg' : 'is-xl';
+  }
+  function lsRead() { try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; } catch (e) { return []; } }
+
+  function load() {
+    if (!LIVE) return Promise.resolve(lsRead());
+    return fetch(CFG.supabaseUrl + '/rest/v1/' + (CFG.table || 'guestbook') +
+      '?select=id,name,message,color,created_at&order=created_at.desc&limit=300', {
+      headers: { apikey: CFG.supabaseKey, Authorization: 'Bearer ' + CFG.supabaseKey }
+    }).then(function (r) { if (!r.ok) throw new Error('load'); return r.json(); });
+  }
+
+  function save(note) {
+    if (!LIVE) {
+      var all = lsRead(); all.unshift(note);
+      try { localStorage.setItem(LS_KEY, JSON.stringify(all)); } catch (e) {}
+      return Promise.resolve([note]);
+    }
+    return fetch(CFG.supabaseUrl + '/rest/v1/' + (CFG.table || 'guestbook'), {
+      method: 'POST',
+      headers: {
+        apikey: CFG.supabaseKey, Authorization: 'Bearer ' + CFG.supabaseKey,
+        'Content-Type': 'application/json', Prefer: 'return=representation'
+      },
+      body: JSON.stringify({ name: note.name, message: note.message, color: note.color })
+    }).then(function (r) { if (!r.ok) throw new Error('save'); return r.json(); });
+  }
+
+  function render(notes) {
+    board.textContent = '';
+    totalEl.textContent = notes.length === 1 ? '1 note' : notes.length + ' notes';
+    if (!notes.length) {
+      var e = document.createElement('p');
+      e.className = 'gb-empty';
+      e.textContent = OPEN ? 'No notes yet — be the first to leave one.' : 'No notes on the wall yet.';
+      board.appendChild(e);
+      return;
+    }
+    notes.forEach(function (n) {
+      var key = String(n.id || n.created_at);
+      var el = document.createElement('article');
+      el.className = 'gb-note ' + sizeClass(n.message) + (!first && !seenIds[key] ? ' is-new' : '');
+      el.style.background = n.color || COLORS[0];
+      el.style.setProperty('--tilt', tilt(key) + 'deg');
+      seenIds[key] = true;
+
+      var p = document.createElement('p');
+      p.className = 'gb-note-msg';
+      p.textContent = n.message;
+
+      var foot = document.createElement('div');
+      foot.className = 'gb-note-foot';
+      var who = document.createElement('span');
+      who.className = 'gb-note-name';
+      who.textContent = n.name && n.name.trim() ? n.name : 'anonymous';
+      var when = document.createElement('span');
+      when.className = 'gb-note-time';
+      when.textContent = ago(n.created_at);
+      foot.appendChild(who); foot.appendChild(when);
+      el.appendChild(p); el.appendChild(foot);
+      board.appendChild(el);
+    });
+    first = false;
+  }
+
+  function refresh() {
+    return load().then(render).catch(function () {
+      if (!board.children.length) {
+        board.textContent = '';
+        var e = document.createElement('p');
+        e.className = 'gb-empty';
+        e.textContent = 'Could not load notes right now. Please try again later.';
+        board.appendChild(e);
+      }
+    });
+  }
+
+  if (OPEN) {
+    bar.hidden = false;
+    document.body.classList.add('gb-bar-on');
+    var form = document.getElementById('gb-form');
+    var nameEl = document.getElementById('gb-name');
+    var msgEl = document.getElementById('gb-message');
+    var trapEl = document.getElementById('gb-website');
+    var countEl = document.getElementById('gb-count');
+    var statusEl = document.getElementById('gb-status');
+    var swatchWrap = document.getElementById('gb-swatches');
+    var chosen = COLORS[0];
+
+    COLORS.forEach(function (c, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'gb-swatch' + (i === 0 ? ' is-on' : '');
+      b.style.background = c;
+      b.setAttribute('aria-label', 'Note color ' + (i + 1));
+      b.addEventListener('click', function () {
+        chosen = c;
+        Array.prototype.forEach.call(swatchWrap.children, function (x) { x.classList.remove('is-on'); });
+        b.classList.add('is-on');
+      });
+      swatchWrap.appendChild(b);
+    });
+
+    function grow() { msgEl.style.height = 'auto'; msgEl.style.height = Math.min(msgEl.scrollHeight, 96) + 'px'; }
+    function say(t, bad) {
+      statusEl.textContent = t || '';
+      statusEl.classList.toggle('is-on', !!t);
+      statusEl.classList.toggle('is-bad', !!bad);
+      if (t) { clearTimeout(say._t); say._t = setTimeout(function () {
+        statusEl.textContent = ''; statusEl.classList.remove('is-on'); }, 4000); }
+    }
+    msgEl.addEventListener('input', function () {
+      countEl.textContent = msgEl.value.length + ' / ' + MAX_MSG;
+      countEl.classList.toggle('is-over', msgEl.value.length > MAX_MSG);
+      grow();
+    });
+    msgEl.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        form.dispatchEvent(new Event('submit', { cancelable: true }));
+      }
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (trapEl.value) return;
+      var msg = msgEl.value.trim(), who = nameEl.value.trim().slice(0, MAX_NAME);
+      if (!msg) { say('Write something first.', true); msgEl.focus(); return; }
+      if (msg.length > MAX_MSG) { say('Keep it under ' + MAX_MSG + ' characters.', true); return; }
+      if (/(https?:\/\/|www\.)/i.test(msg)) { say('Links are not allowed.', true); return; }
+      var last = 0; try { last = parseInt(localStorage.getItem(LS_LAST) || '0', 10); } catch (e2) {}
+      if (Date.now() - last < COOLDOWN_MS) { say('Just a moment before posting again.', true); return; }
+
+      var btn = form.querySelector('button[type=submit]');
+      btn.disabled = true; btn.textContent = 'Pinning…';
+      save({ id: 'n' + Date.now(), name: who || 'anonymous', message: msg, color: chosen, created_at: new Date().toISOString() })
+        .then(function () {
+          try { localStorage.setItem(LS_LAST, String(Date.now())); } catch (e3) {}
+          msgEl.value = ''; nameEl.value = '';
+          countEl.textContent = '0 / ' + MAX_MSG;
+          countEl.classList.remove('is-over');
+          grow(); say('Pinned. Thanks for stopping by!');
+          return refresh();
+        })
+        .catch(function () { say('Something went wrong — your note was not saved.', true); })
+        .then(function () { btn.disabled = false; btn.textContent = 'Pin it'; });
+    });
+
+    var sync = function () { document.body.style.setProperty('--gb-bar-h', bar.offsetHeight + 'px'); };
+    sync();
+    window.addEventListener('resize', sync);
+    if (window.ResizeObserver) new ResizeObserver(sync).observe(bar);
+  }
+
+  refresh();
+  if (LIVE) {
+    setInterval(function () { if (!document.hidden) refresh(); }, POLL_MS);
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) refresh(); });
+  }
+})();
+</script>
+</body>
+</html>

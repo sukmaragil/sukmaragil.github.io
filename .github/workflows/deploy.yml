@@ -1,0 +1,141 @@
+name: Deploy site
+
+# ONE workflow, ONE GitHub Pages site. It builds the Jekyll site and injects
+# the standalone guestbook page into /guestbook/ of the same artifact.
+# Do not add a second workflow that calls deploy-pages — a repo has only one
+# Pages site and the two deploys would overwrite each other.
+#
+# Config lives on the "github-pages" ENVIRONMENT:
+#   Settings → Environments → github-pages
+#
+#   Environment secrets
+#     SUPABASE_URL       https://xxxxxxxx.supabase.co
+#     SUPABASE_ANON_KEY  eyJhbGci....   the anon public key (never service_role)
+#
+#   Environment variables (non-sensitive)
+#     OPEN_FEEDBACK      true | false   show the guestbook input box (default true)
+#     SUPABASE_TABLE     guestbook      (optional)
+#     HOME_URL           guestbook "back to site" link
+#                        (optional — defaults to the site's own baseurl)
+#
+# Masking only affects log output — the value written into the page is intact.
+# With the secrets unset the guestbook still deploys, in browser-only mode.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      open_feedback:
+        description: "Show the guestbook input box"
+        type: choice
+        options: ["true", "false"]
+        default: "true"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Needed to read the environment's secrets/variables at build time.
+    environment: github-pages
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve open_feedback
+        id: flag
+        run: |
+          VALUE="${{ github.event.inputs.open_feedback || vars.OPEN_FEEDBACK || 'true' }}"   # vars.* resolves the environment variable
+          if [ "$VALUE" != "false" ]; then VALUE="true"; fi
+          echo "value=$VALUE" >> "$GITHUB_OUTPUT"
+          echo "Guestbook input box enabled: $VALUE"
+
+      - name: Apply build-time config
+        run: echo "open_feedback: ${{ steps.flag.outputs.value }}" > _config.ci.yml
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+
+      - uses: actions/configure-pages@v5
+
+      - name: Build with Jekyll
+        run: bundle exec jekyll build --config _config.yml,_config.ci.yml
+        env:
+          JEKYLL_ENV: production
+
+      # The standalone page is excluded from the Jekyll build and injected here,
+      # so the keys never sit in the repo. Skipped if the folder isn't present.
+      - name: Add standalone guestbook
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_TABLE: ${{ vars.SUPABASE_TABLE }}
+          OPEN_FEEDBACK: ${{ steps.flag.outputs.value }}
+          HOME_URL: ${{ vars.HOME_URL }}
+        run: |
+          set -eu
+          SRC="guestbook/index.html"
+          if [ ! -f "$SRC" ]; then
+            echo "No $SRC — skipping standalone guestbook."
+            exit 0
+          fi
+          if [ -z "${SUPABASE_URL}" ] || [ -z "${SUPABASE_ANON_KEY}" ]; then
+            echo "::warning::SUPABASE_URL / SUPABASE_ANON_KEY environment secrets not set — guestbook deploys in browser-only mode."
+          fi
+
+          # Back-link must respect baseurl: on a project repo the site root is
+          # /<repo>/, not /. HOME_URL overrides if set.
+          if [ -z "${HOME_URL}" ]; then
+            BASEURL="$(sed -n 's/^baseurl:[[:space:]]*"\{0,1\}\([^"]*\)"\{0,1\}[[:space:]]*$/\1/p' _config.yml | head -n1)"
+            HOME_URL="${BASEURL%/}/"
+          fi
+          export HOME_URL
+          echo "Guestbook back-link: $HOME_URL"
+
+          mkdir -p _site/guestbook
+          cp "$SRC" _site/guestbook/index.html
+
+          python3 - <<'PY'
+          import os, pathlib
+          p = pathlib.Path("_site/guestbook/index.html")
+          html = p.read_text(encoding="utf-8")
+          repl = {
+              "__SUPABASE_URL__":      os.environ.get("SUPABASE_URL", ""),
+              "__SUPABASE_ANON_KEY__": os.environ.get("SUPABASE_ANON_KEY", ""),
+              "__SUPABASE_TABLE__":    os.environ.get("SUPABASE_TABLE") or "guestbook",
+              "__HOME_URL__":          os.environ.get("HOME_URL") or "/",
+              "__OPEN_FEEDBACK__":     os.environ.get("OPEN_FEEDBACK") or "true",
+          }
+          for token, value in repl.items():
+              safe = value.replace("\\", "\\\\").replace('"', '\\"')
+              html = html.replace(token, safe)
+          p.write_text(html, encoding="utf-8")
+          print("guestbook config injected")
+          PY
+
+          if grep -q '__SUPABASE_ANON_KEY__\|__SUPABASE_URL__' _site/guestbook/index.html; then
+            echo "::error::placeholder substitution failed"; exit 1
+          fi
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

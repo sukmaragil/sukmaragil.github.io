@@ -17,6 +17,17 @@ linkedin: "https://www.linkedin.com/in/sukmaragil"
 github: "https://github.com"
 email: "hello@sukmaragil.dev"
 
+# Guestbook input box. This is the LOCAL default only — the deployed value is set by
+# .github/workflows/deploy.yml (OPEN_FEEDBACK on the github-pages environment), which overrides it.
+open_feedback: true
+
+# Guestbook storage (optional).
+# Leave blank = demo mode (notes saved only in each visitor's own browser).
+# Fill in to make the wall shared by everyone. See README for the 10-minute setup.
+supabase_url: ""
+supabase_anon_key: ""
+supabase_table: "guestbook"
+
 # Build
 markdown: kramdown
 permalink: /blog/:title/
@@ -27,4 +38,9 @@ sort_posts: descending
 
 exclude:
   - README.md
+  - Gemfile
   - preview.html
+  - preview-guestbook.html
+  - preview-guestbook-closed.html
+  - _config.ci.yml
+  - guestbook
