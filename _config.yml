@@ -36,9 +36,14 @@ timezone: Asia/Jakarta
 # Newest posts first in listings
 sort_posts: descending
 
+# NOTE: setting `exclude` replaces Jekyll's defaults, so vendor/ and the
+# bundler dirs must be listed here or CI tries to build the installed gems.
 exclude:
-  - README.md
+  - vendor
+  - .bundle
   - Gemfile
+  - Gemfile.lock
+  - README.md
   - preview.html
   - preview-guestbook.html
   - preview-guestbook-closed.html
