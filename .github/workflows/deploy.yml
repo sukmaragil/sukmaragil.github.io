@@ -5,17 +5,21 @@ name: Deploy site
 # Do not add a second workflow that calls deploy-pages - a repo has only one
 # Pages site and the two deploys would overwrite each other.
 #
-# Config lives on the "github-pages" ENVIRONMENT:
-#   Settings -> Environments -> github-pages
+# Config lives in repo Actions secrets/variables:
+#   Settings -> Secrets and variables -> Actions
 #
-#   Environment secrets
+#   Secrets
 #     SUPABASE_URL       https://xxxxxxxx.supabase.co
 #     SUPABASE_ANON_KEY  the anon public key (never service_role)
 #
-#   Environment variables (non-sensitive, all optional)
+#   Variables (non-sensitive, all optional)
 #     OPEN_FEEDBACK      true | false  show the guestbook input box (default true)
 #     SUPABASE_TABLE     table name (default guestbook)
 #     HOME_URL           guestbook back-link (defaults to the site's baseurl)
+#
+# Only the deploy job may declare `environment: github-pages`. Putting it on
+# the build job makes that job claim the Pages environment as well, which
+# breaks publishing even though the run reports success.
 #
 # With the secrets unset the guestbook still deploys, in browser-only mode.
 
@@ -44,7 +48,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: github-pages
     steps:
       - uses: actions/checkout@v4
 
