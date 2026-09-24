@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 </head>
-<body{% if page.nav == 'guestbook' and site.open_feedback %} class="gb-bar-on"{% endif %}>
+<body>
   <header class="site-header">
     <div class="wrap">
       <a class="brand" href="{{ '/' | relative_url }}">{{ site.title }}</a>
@@ -19,6 +19,7 @@
         <a href="{{ '/work/' | relative_url }}"{% if page.nav == 'work' %} class="active"{% endif %}>Work</a>
         <a href="{{ '/projects/' | relative_url }}"{% if page.nav == 'projects' %} class="active"{% endif %}>Projects</a>
         <a href="{{ '/blog/' | relative_url }}"{% if page.nav == 'blog' %} class="active"{% endif %}>Writing</a>
+        <a href="{{ '/guestbook/' | relative_url }}"{% if page.nav == 'guestbook' %} class="active"{% endif %}>Guestbook</a>
       </nav>
     </div>
   </header>

@@ -21,13 +21,6 @@ email: "hello@sukmaragil.dev"
 # .github/workflows/deploy.yml (OPEN_FEEDBACK on the github-pages environment), which overrides it.
 open_feedback: true
 
-# Guestbook storage (optional).
-# Leave blank = demo mode (notes saved only in each visitor's own browser).
-# Fill in to make the wall shared by everyone. See README for the 10-minute setup.
-supabase_url: ""
-supabase_anon_key: ""
-supabase_table: "guestbook"
-
 # Build
 markdown: kramdown
 permalink: /blog/:title/
@@ -44,8 +37,5 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
-  - preview.html
-  - preview-guestbook.html
-  - preview-guestbook-closed.html
   - _config.ci.yml
   - guestbook
