@@ -1,0 +1,22 @@
+---
+permalink: /
+sitemap: false
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ site.title }} — Guestbook</title>
+  <link rel="canonical" href="{{ '/guestbook/' | absolute_url }}">
+  <meta http-equiv="refresh" content="0; url={{ '/guestbook/' | relative_url }}">
+  <script>location.replace({{ '/guestbook/' | relative_url | jsonify }});</script>
+  <style>
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center;
+           font: 400 15px/1.6 "IBM Plex Sans", system-ui, sans-serif; color: #57606a; background: #fff; }
+    a { color: #0969da; }
+  </style>
+</head>
+<body>
+  <p>Redirecting to the <a href="{{ '/guestbook/' | relative_url }}">guestbook</a>…</p>
+</body>
+</html>

@@ -110,7 +110,7 @@ jobs:
           HOME="${HOME_URL:-}"
           if [ -z "$HOME" ]; then
             BASE=$(grep -m1 '^baseurl:' _config.yml | cut -d: -f2- | tr -d ' "' || true)
-            HOME="${BASE%/}/"
+            HOME="${BASE%/}/home/"
           fi
           echo "Guestbook back-link: $HOME"
 
