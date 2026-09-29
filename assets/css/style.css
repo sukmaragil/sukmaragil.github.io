@@ -9,7 +9,7 @@
   --border: #d0d7de;
   --blue:   #0969da;
   --green:  #1f883d;
-  --serif:  'Newsreader', Georgia, serif;
+  --serif:  'Trykker', Georgia, serif;
   --sans:   'IBM Plex Sans', system-ui, -apple-system, sans-serif;
   --mono:   'IBM Plex Mono', ui-monospace, monospace;
 }
@@ -40,7 +40,7 @@ a { color: inherit; }
   gap: 24px; padding-top: 18px; padding-bottom: 18px;
 }
 .brand {
-  font-family: var(--serif); font-size: 19px; font-weight: 600;
+  font-family: var(--serif); font-size: 19px; font-weight: 400;
   letter-spacing: -0.01em; color: var(--ink); text-decoration: none;
 }
 .nav { display: flex; gap: 22px; }
@@ -59,11 +59,11 @@ a { color: inherit; }
   text-transform: uppercase; color: var(--blue); margin: 0 0 22px;
 }
 h1.hero {
-  font-family: var(--serif); font-weight: 500; font-size: 46px;
+  font-family: var(--serif); font-weight: 400; font-size: 46px;
   line-height: 1.12; letter-spacing: -0.02em; margin: 0 0 28px; color: var(--ink);
 }
 h1.page-title {
-  font-family: var(--serif); font-weight: 500; font-size: 38px;
+  font-family: var(--serif); font-weight: 400; font-size: 38px;
   letter-spacing: -0.02em; margin: 0 0 12px; color: var(--ink);
 }
 .section-intro { font-size: 17px; max-width: 58ch; margin: 0 0 56px; color: var(--body); }
@@ -91,13 +91,12 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 64px 0; }
 }
 .focus-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px 48px; }
 .focus-grid h3 {
-  font-family: var(--serif); font-weight: 500; font-size: 21px;
+  font-family: var(--serif); font-weight: 400; font-size: 21px;
   margin: 0 0 8px; color: var(--ink);
 }
 .focus-grid p { font-size: 15.5px; margin: 0; color: var(--body); }
 
 /* Experience timeline */
-.timeline { }
 .job {
   display: grid; grid-template-columns: 120px 1fr; gap: 28px;
   border-left: 1px solid var(--border); margin-left: 4px;
@@ -109,7 +108,7 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 64px 0; }
 }
 .job .period { font-family: var(--mono); font-size: 12.5px; color: var(--muted); padding-top: 2px; }
 .job .detail { grid-column: 2; }
-.job h3 { font-family: var(--serif); font-weight: 600; font-size: 22px; margin: 0 0 2px; color: var(--ink); }
+.job h3 { font-family: var(--serif); font-weight: 400; font-size: 22px; margin: 0 0 2px; color: var(--ink); }
 .job .company { font-size: 15px; margin: 0 0 14px; color: var(--muted); }
 .job ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 7px; }
 .job li { font-size: 15.5px; color: var(--body); }
@@ -121,7 +120,7 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 64px 0; }
   padding: 26px 28px; background: var(--canvas);
 }
 .card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 10px; }
-.card h3 { font-family: var(--serif); font-weight: 600; font-size: 21px; margin: 0; color: var(--ink); }
+.card h3 { font-family: var(--serif); font-weight: 400; font-size: 21px; margin: 0; color: var(--ink); }
 .card .tag { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.03em; color: var(--blue); white-space: nowrap; }
 .card p { font-size: 15.5px; margin: 0 0 14px; color: var(--body); }
 .stack { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -139,7 +138,7 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 64px 0; }
 .post-list .meta .date { font-family: var(--mono); font-size: 12px; color: var(--blue); }
 .post-list .meta .read { font-family: var(--mono); font-size: 12px; color: var(--faint); }
 .post-list h3 {
-  font-family: var(--serif); font-weight: 600; font-size: 24px;
+  font-family: var(--serif); font-weight: 400; font-size: 24px;
   letter-spacing: -0.01em; margin: 0 0 8px; color: var(--ink);
 }
 .post-list p { font-size: 16px; margin: 0; max-width: 62ch; color: var(--body); }
@@ -151,12 +150,12 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 64px 0; }
 .post-meta .date { font-family: var(--mono); font-size: 12.5px; color: var(--blue); }
 .post-meta .read { font-family: var(--mono); font-size: 12.5px; color: var(--faint); }
 .post-title {
-  font-family: var(--serif); font-weight: 600; font-size: 40px;
+  font-family: var(--serif); font-weight: 400; font-size: 40px;
   line-height: 1.14; letter-spacing: -0.02em; margin: 0 0 40px; color: var(--ink);
 }
 .post-body { max-width: 64ch; }
 .post-body p { font-size: 18px; line-height: 1.72; margin: 0 0 26px; color: var(--ink); }
-.post-body h2 { font-family: var(--serif); font-weight: 600; font-size: 26px; margin: 40px 0 16px; color: var(--ink); }
+.post-body h2 { font-family: var(--serif); font-weight: 400; font-size: 26px; margin: 40px 0 16px; color: var(--ink); }
 .post-body a { color: var(--blue); }
 .post-body code { font-family: var(--mono); font-size: 0.88em; background: var(--canvas); padding: 1px 5px; border-radius: 4px; }
 .post-body pre { background: var(--canvas); border: 1px solid var(--border); border-radius: 6px; padding: 16px; overflow: auto; }

@@ -7,7 +7,7 @@
 <meta name="description" content="Leave a note on the wall.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Trykker&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <!-- ════════════════════════════════════════════════════════════════
      CONFIG — injected at deploy time by .github/workflows/deploy.yml
@@ -41,7 +41,7 @@ window.GUESTBOOK_CONFIG = {
   --bg:#ffffff; --canvas:#f6f8fa; --ink:#1f2328; --body:#424a53;
   --muted:#656d76; --faint:#8c959f; --border:#d0d7de;
   --blue:#0969da; --green:#1f883d;
-  --serif:'Newsreader',Georgia,serif;
+  --serif:'Trykker',Georgia,serif;
   --sans:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,monospace;
   --gb-bar-h:78px;
@@ -66,7 +66,7 @@ a{color:inherit}
   display:flex;align-items:baseline;justify-content:space-between;
   gap:24px;padding-top:18px;padding-bottom:18px;
 }
-.brand{font-family:var(--serif);font-size:19px;font-weight:600;letter-spacing:-0.01em;text-decoration:none}
+.brand{font-family:var(--serif);font-size:19px;font-weight:400;letter-spacing:-0.01em;text-decoration:none}
 .home-link{
   font-family:var(--mono);font-size:12.5px;letter-spacing:0.02em;
   color:var(--muted);text-decoration:none;
@@ -74,9 +74,9 @@ a{color:inherit}
 .home-link:hover{color:var(--ink)}
 
 main{flex:1 0 auto;padding-bottom:44px}
-.page-pad{padding-top:88px}
+.page-pad{padding-top:28px}
 .page-title{
-  font-family:var(--serif);font-weight:500;font-size:38px;
+  font-family:var(--serif);font-weight:400;font-size:38px;
   letter-spacing:-0.02em;margin:0 0 12px;
 }
 .section-intro{font-size:17px;max-width:58ch;margin:0 0 56px;color:var(--body)}
@@ -122,15 +122,15 @@ main{flex:1 0 auto;padding-bottom:44px}
 to{opacity:1;transform:rotate(var(--tilt,0deg)) scale(1) translateY(0)}}
 .gb-note-msg{
   font-family:var(--serif);font-size:17.5px;line-height:1.5;
-  margin:0 0 14px;color:#1f2328;text-wrap:pretty;overflow-wrap:anywhere;
+  margin:0 0 14px;color:var(--note-ink,#1f2328);text-wrap:pretty;overflow-wrap:anywhere;
 }
 .gb-note.is-sm .gb-note-msg{font-size:19px}
 .gb-note-foot{
   display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;
-  gap:2px 12px;border-top:1px solid rgba(31,35,40,0.12);padding-top:9px;
+  gap:2px 12px;border-top:1px solid var(--note-rule,rgba(31,35,40,0.12));padding-top:9px;
 }
-.gb-note-name{font-family:var(--mono);font-size:12px;color:#1f2328;overflow-wrap:anywhere}
-.gb-note-time{font-family:var(--mono);font-size:11.5px;color:#424a53;white-space:nowrap}
+.gb-note-name{font-family:var(--mono);font-size:12px;color:var(--note-ink,#1f2328);overflow-wrap:anywhere}
+.gb-note-time{font-family:var(--mono);font-size:11.5px;color:var(--note-ink-soft,#424a53);white-space:nowrap}
 .gb-empty{
   flex:1 1 100%;font-size:15.5px;color:var(--muted);
   border:1px dashed var(--border);border-radius:6px;
@@ -161,18 +161,52 @@ to{opacity:1;transform:rotate(var(--tilt,0deg)) scale(1) translateY(0)}}
 .btn{
   font-family:var(--mono);font-size:13px;padding:10px 18px;
   border-radius:6px;cursor:pointer;white-space:nowrap;
+  min-width:100px;text-align:center;
   background:var(--green);color:#fff;border:1px solid var(--green);
 }
 .btn:hover{background:#1a7f37}
-.btn:disabled{opacity:.6;cursor:default}
+.btn:disabled{cursor:default;background:#656d76;border-color:#656d76;color:#fff}
 .gb-count{font-family:var(--mono);font-size:11.5px;color:var(--faint);white-space:nowrap;flex:0 0 auto;padding-bottom:11px}
 .gb-count.is-over{color:#cf222e}
-.gb-swatches{display:flex;gap:7px;flex:0 0 auto;padding-bottom:8px}
-.gb-swatch{
-  width:24px;height:24px;border-radius:50%;cursor:pointer;
-  border:1px solid rgba(31,35,40,0.18);padding:0;
+.gb-color{position:relative;flex:0 0 auto}
+.gb-color-btn{
+  display:flex;align-items:center;gap:7px;cursor:pointer;
+  background:var(--bg);border:1px solid var(--border);border-radius:6px;
+  padding:8px 10px;line-height:1;
 }
-.gb-swatch.is-on{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--blue)}
+.gb-color-btn:focus-visible{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(9,105,218,0.15)}
+.gb-color-btn:hover{border-color:var(--faint)}
+.gb-color-dot{
+  width:20px;height:20px;border-radius:50%;
+  border:1px solid rgba(31,35,40,0.18);display:block;
+}
+.gb-color-caret{
+  width:9px;height:9px;flex:0 0 auto;
+  border-right:1.6px solid var(--muted);border-bottom:1.6px solid var(--muted);
+  transform:translateY(-2px) rotate(45deg);
+}
+.gb-color.is-open .gb-color-caret{transform:translateY(2px) rotate(225deg)}
+.gb-color-pop{
+  position:absolute;bottom:calc(100% + 10px);right:0;z-index:40;
+  background:var(--bg);border:1px solid var(--border);border-radius:8px;
+  box-shadow:0 8px 24px -6px rgba(31,35,40,0.28);
+  padding:14px 16px 16px;
+}
+.gb-color-head{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:500;
+}
+.gb-color-grid{display:grid;grid-template-columns:repeat(10,28px);gap:9px}
+.gb-color-opt{
+  width:28px;height:28px;border-radius:50%;cursor:pointer;padding:0;
+  border:1px solid rgba(31,35,40,0.18);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;line-height:1;
+}
+.gb-color-opt:hover{box-shadow:0 0 0 2px var(--bg),0 0 0 3px var(--border)}
+.gb-color-opt:focus-visible{outline:none;box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--blue)}
+.gb-color-opt .tick{visibility:hidden}
+.gb-color-opt[aria-selected=true] .tick{visibility:visible}
 .gb-status{
   position:absolute;left:28px;top:-16px;
   font-family:var(--mono);font-size:12px;
@@ -204,7 +238,7 @@ body.gb-bar-on .site-footer{padding-bottom:calc(var(--gb-bar-h) + 16px)}
   .gb-note,.gb-note.is-sm,.gb-note.is-md,.gb-note.is-lg,.gb-note.is-xl{flex:1 1 100%;max-width:100%}
   .gb-bar-inner{flex-wrap:wrap;padding:12px 20px;gap:8px}
   .gb-in-name,.gb-in-msg{flex:1 1 100%}
-  .gb-swatches{padding-bottom:0}
+  .gb-color-grid{grid-template-columns:repeat(5,28px)}
   .gb-count{padding-bottom:0;margin-left:auto}
   .gb-status{left:20px}
 }
@@ -245,7 +279,16 @@ body.gb-bar-on .site-footer{padding-bottom:calc(var(--gb-bar-h) + 16px)}
     <span id="gb-status" class="gb-status" role="status" aria-live="polite"></span>
     <input id="gb-name" class="gb-in-name" type="text" maxlength="32" placeholder="Name (optional)" aria-label="Your name, optional">
     <textarea id="gb-message" class="gb-in-msg" rows="1" maxlength="260" placeholder="Leave a note…" aria-label="Your message"></textarea>
-    <div id="gb-swatches" class="gb-swatches" role="group" aria-label="Note color"></div>
+    <div class="gb-color" id="gb-color">
+      <button type="button" class="gb-color-btn" id="gb-color-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Note color">
+        <span class="gb-color-dot" id="gb-color-dot"></span>
+        <span class="gb-color-caret"></span>
+      </button>
+      <div class="gb-color-pop" id="gb-color-pop" hidden>
+        <p class="gb-color-head">Colors</p>
+        <div class="gb-color-grid" id="gb-color-grid" role="listbox" aria-label="Note color"></div>
+      </div>
+    </div>
     <span id="gb-count" class="gb-count">0 / 240</span>
     <button type="submit" class="btn">Pin it</button>
     <input id="gb-website" type="text" class="gb-trap" tabindex="-1" aria-hidden="true" autocomplete="off">
@@ -281,7 +324,38 @@ body.gb-bar-on .site-footer{padding-bottom:calc(var(--gb-bar-h) + 16px)}
   var OPEN = CFG.openFeedback !== false && CFG.openFeedback !== 'false';
   var LS_KEY = 'gb_standalone_notes_v1', LS_LAST = 'gb_standalone_last';
   var MAX_MSG = 240, MAX_NAME = 32, COOLDOWN_MS = 30000, POLL_MS = 20000;
-  var COLORS = ['#fff3bf', '#d3f9d8', '#d0ebff', '#ffdeeb', '#e5dbff'];
+  var PALETTE = [
+    ['#f56b66', 'Red'],       ['#f5821f', 'Orange'],  ['#fcc61d', 'Gold'],
+    ['#4ed693', 'Green'],     ['#c3d130', 'Olive'],   ['#17b6cf', 'Teal'],
+    ['#8fa8e8', 'Periwinkle'],['#efb5e8', 'Orchid'],  ['#fb5c93', 'Magenta'],
+    ['#33393b', 'Charcoal'],
+    ['#fa8a8a', 'Coral'],     ['#f9ad8a', 'Peach'],   ['#fbe06a', 'Lemon'],
+    ['#cbe57a', 'Lime'],      ['#93c95e', 'Leaf'],    ['#8fe6dd', 'Aqua'],
+    ['#7fd8ee', 'Sky'],       ['#e8edf4', 'Ice'],     ['#ffc2c9', 'Blush'],
+    ['#d9d9c4', 'Sage']
+  ];
+  var COLORS = PALETTE.map(function (p) { return p[0]; });
+  var COLOR_LABELS = PALETTE.map(function (p) { return p[1]; });
+
+  // Relative luminance -> pick note ink that clears 4.5:1 on that background.
+  function luminance(hex) {
+    var h = String(hex || '').replace('#', '');
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    if (h.length !== 6) return 1;
+    function ch(i) {
+      var v = parseInt(h.slice(i, i + 2), 16) / 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    }
+    return 0.2126 * ch(0) + 0.7152 * ch(2) + 0.0722 * ch(4);
+  }
+  function inkSet(hex) {
+    var L = luminance(hex);
+    if (L < 0.2488) {
+      return { ink: '#ffffff', soft: 'rgba(255,255,255,0.86)', rule: 'rgba(255,255,255,0.3)' };
+    }
+    // #424a53 only clears 4.5:1 on pale grounds; fall back to full ink on saturated ones.
+    return { ink: '#1f2328', soft: L > 0.55 ? '#424a53' : '#1f2328', rule: 'rgba(31,35,40,0.12)' };
+  }
 
   var board = document.getElementById('gb-board');
   var totalEl = document.getElementById('gb-total');
@@ -352,7 +426,12 @@ body.gb-bar-on .site-footer{padding-bottom:calc(var(--gb-bar-h) + 16px)}
       var key = String(n.id || n.created_at);
       var el = document.createElement('article');
       el.className = 'gb-note ' + sizeClass(n.message) + (!first && !seenIds[key] ? ' is-new' : '');
-      el.style.background = n.color || COLORS[0];
+      var bg = n.color || COLORS[0];
+      var ink = inkSet(bg);
+      el.style.background = bg;
+      el.style.setProperty('--note-ink', ink.ink);
+      el.style.setProperty('--note-ink-soft', ink.soft);
+      el.style.setProperty('--note-rule', ink.rule);
       el.style.setProperty('--tilt', tilt(key) + 'deg');
       seenIds[key] = true;
 
@@ -396,21 +475,56 @@ body.gb-bar-on .site-footer{padding-bottom:calc(var(--gb-bar-h) + 16px)}
     var trapEl = document.getElementById('gb-website');
     var countEl = document.getElementById('gb-count');
     var statusEl = document.getElementById('gb-status');
-    var swatchWrap = document.getElementById('gb-swatches');
+    var colorWrap = document.getElementById('gb-color');
+    var colorBtn = document.getElementById('gb-color-btn');
+    var colorDot = document.getElementById('gb-color-dot');
+    var colorPop = document.getElementById('gb-color-pop');
+    var colorGrid = document.getElementById('gb-color-grid');
     var chosen = COLORS[0];
+
+    function closeColors() {
+      colorWrap.classList.remove('is-open');
+      colorPop.hidden = true;
+      colorBtn.setAttribute('aria-expanded', 'false');
+    }
+    function openColors() {
+      colorWrap.classList.add('is-open');
+      colorPop.hidden = false;
+      colorBtn.setAttribute('aria-expanded', 'true');
+    }
 
     COLORS.forEach(function (c, i) {
       var b = document.createElement('button');
       b.type = 'button';
-      b.className = 'gb-swatch' + (i === 0 ? ' is-on' : '');
+      b.className = 'gb-color-opt';
       b.style.background = c;
-      b.setAttribute('aria-label', 'Note color ' + (i + 1));
+      b.setAttribute('role', 'option');
+      b.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+      b.setAttribute('aria-label', COLOR_LABELS[i] || 'Color ' + (i + 1));
+      b.title = COLOR_LABELS[i] || 'Color ' + (i + 1);
+      b.innerHTML = '<span class="tick">\u2713</span>';
+      b.firstChild.style.color = inkSet(c).ink;
       b.addEventListener('click', function () {
         chosen = c;
-        Array.prototype.forEach.call(swatchWrap.children, function (x) { x.classList.remove('is-on'); });
-        b.classList.add('is-on');
+        colorDot.style.background = c;
+        Array.prototype.forEach.call(colorGrid.children, function (x) {
+          x.setAttribute('aria-selected', x === b ? 'true' : 'false');
+        });
+        closeColors();
+        colorBtn.focus();
       });
-      swatchWrap.appendChild(b);
+      colorGrid.appendChild(b);
+    });
+    colorDot.style.background = chosen;
+
+    colorBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (colorPop.hidden) { openColors(); } else { closeColors(); }
+    });
+    colorPop.addEventListener('click', function (e) { e.stopPropagation(); });
+    document.addEventListener('click', function () { if (!colorPop.hidden) closeColors(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !colorPop.hidden) { closeColors(); colorBtn.focus(); }
     });
 
     function grow() { msgEl.style.height = 'auto'; msgEl.style.height = Math.min(msgEl.scrollHeight, 96) + 'px'; }
@@ -433,6 +547,32 @@ body.gb-bar-on .site-footer{padding-bottom:calc(var(--gb-bar-h) + 16px)}
       }
     });
 
+    var submitBtn = form.querySelector('button[type=submit]');
+    var cdTimer = null;
+    function cooldownLeft() {
+      var last = 0; try { last = parseInt(localStorage.getItem(LS_LAST) || '0', 10); } catch (e) {}
+      return Math.max(0, COOLDOWN_MS - (Date.now() - last));
+    }
+    function tickCooldown() {
+      var left = cooldownLeft();
+      if (left > 0) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Wait ' + Math.ceil(left / 1000) + 's';
+        submitBtn.title = 'You can post again in ' + Math.ceil(left / 1000) + ' seconds';
+      } else {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Pin it';
+        submitBtn.removeAttribute('title');
+        if (cdTimer) { clearInterval(cdTimer); cdTimer = null; }
+      }
+    }
+    function startCooldown() {
+      if (cdTimer) clearInterval(cdTimer);
+      tickCooldown();
+      if (cooldownLeft() > 0) cdTimer = setInterval(tickCooldown, 250);
+    }
+    startCooldown();
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (trapEl.value) return;
@@ -440,10 +580,10 @@ body.gb-bar-on .site-footer{padding-bottom:calc(var(--gb-bar-h) + 16px)}
       if (!msg) { say('Write something first.', true); msgEl.focus(); return; }
       if (msg.length > MAX_MSG) { say('Keep it under ' + MAX_MSG + ' characters.', true); return; }
       if (/(https?:\/\/|www\.)/i.test(msg)) { say('Links are not allowed.', true); return; }
-      var last = 0; try { last = parseInt(localStorage.getItem(LS_LAST) || '0', 10); } catch (e2) {}
-      if (Date.now() - last < COOLDOWN_MS) { say('Just a moment before posting again.', true); return; }
+      var left = cooldownLeft();
+      if (left > 0) { say('Hold on — ' + Math.ceil(left / 1000) + 's before you can post again.', true); startCooldown(); return; }
 
-      var btn = form.querySelector('button[type=submit]');
+      var btn = submitBtn;
       btn.disabled = true; btn.textContent = 'Pinning…';
       save({ id: 'n' + Date.now(), name: who || 'anonymous', message: msg, color: chosen, created_at: new Date().toISOString() })
         .then(function () {
@@ -455,7 +595,7 @@ body.gb-bar-on .site-footer{padding-bottom:calc(var(--gb-bar-h) + 16px)}
           return refresh();
         })
         .catch(function () { say('Something went wrong — your note was not saved.', true); })
-        .then(function () { btn.disabled = false; btn.textContent = 'Pin it'; });
+        .then(function () { startCooldown(); });
     });
 
     var sync = function () { document.body.style.setProperty('--gb-bar-h', bar.offsetHeight + 'px'); };
