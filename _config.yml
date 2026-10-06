@@ -15,7 +15,7 @@ baseurl: ""
 # Social / contact (edit these)
 linkedin: "https://www.linkedin.com/in/sukmaragil"
 github: "https://github.com"
-email: "hello@sukmaragil.dev"
+email: "sukmaragilp@gmail.com"
 
 # Guestbook input box. This is the LOCAL default only — the deployed value is set by
 # .github/workflows/deploy.yml (OPEN_FEEDBACK on the github-pages environment), which overrides it.
