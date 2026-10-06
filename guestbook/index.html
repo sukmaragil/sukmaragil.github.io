@@ -161,7 +161,8 @@ window.GUESTBOOK_CONFIG = {
 
   var homeLink = document.getElementById('home-link');
   if (CFG.homeUrl) homeLink.href = CFG.homeUrl; else homeLink.remove();
-  if (!LIVE) document.getElementById('gb-setup').hidden = false;
+  var setupEl = document.getElementById('gb-setup');
+  if (!LIVE && setupEl) setupEl.hidden = false;
   if (!OPEN) document.getElementById('gb-intro').textContent = 'A wall of notes from people passing through.';
 
   function ago(iso) {

@@ -1,0 +1,12 @@
+# Local preview only: serve the standalone guestbook (CI injects it instead).
+# Unsubstituted placeholders make it run in browser-only mode.
+# Usage: bundle exec jekyll serve --livereload --config _config.yml,_config.local.yml
+exclude:
+  - vendor
+  - .bundle
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - _config.ci.yml
+  - _config.local.yml
+  - guestbook/README.md

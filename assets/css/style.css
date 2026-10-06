@@ -42,7 +42,9 @@ a { color: inherit; }
 .brand {
   font-family: var(--serif); font-size: 19px; font-weight: 400;
   letter-spacing: -0.01em; color: var(--ink); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
 }
+.brand .icon { width: 22px; height: 22px; }
 .nav { display: flex; gap: 22px; }
 .nav a {
   font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.02em;
